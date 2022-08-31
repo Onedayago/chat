@@ -1,0 +1,12 @@
+
+
+.container{
+    display: flex;
+    flex: 1;
+    height: 100%;
+    flex-direction: column;
+}
+
+.outlet {
+    height: 100%;
+}
