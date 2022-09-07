@@ -9,18 +9,28 @@ class TalkSource {
     @observable
     msgList = [];
 
+    @observable
+    friendInfo = null;
+
+    @observable
+    userInfo = null;
+
     constructor() {
         makeObservable(this);
     }
 
     @action
-    initData(){
+    initData(data){
         global.eventBus.addListener('msg', this.onMsg);
+        this.friendInfo = data.friendInfo;
+        this.userInfo = data.userInfo;
     }
 
     @action
     clearData(){
         this.msgList = [];
+        this.friendInfo = null;
+        this.userInfo = null;
         global.eventBus.removeListener('msg', this.onMsg);
     }
 
@@ -61,9 +71,18 @@ class TalkSource {
     sendMsg = async (params) => {
         try {
             const res = await Api.sendMsg(params);
+            let data = res.data;
+            let msg = {
+                _id: data.id,
+                type: data.msgType,
+                content: { text: data.msgContent },
+                position: 'right',
+                hasTime: true,
+                createdAt: data.createdAt
+            }
             runInAction(()=>{
                 let arr = _.cloneDeep(this.msgList);
-                arr.push(res.data);
+                arr.push(msg);
                 this.msgList = arr;
             })
 
@@ -72,9 +91,10 @@ class TalkSource {
         }
     }
 
-    onMsg = (data, userInfo) => {
-        let msg;
-        if(data.userId === userInfo.id){
+    onMsg = (data) => {
+        let msg = null;
+        //判断这次 socket 推送是否是当前用户的聊天对话
+        if(data.userId === this.userInfo.id){
             msg = {
                 _id: data.id,
                 type: data.msgType,
@@ -83,7 +103,7 @@ class TalkSource {
                 hasTime: true,
                 createdAt: data.createdAt
             }
-        }else{
+        }else if(data.userId === this.friendInfo.friendId){
             msg = {
                 _id: data.id,
                 type: data.msgType,
@@ -93,11 +113,14 @@ class TalkSource {
                 createdAt: data.createdAt
             }
         }
-        let arr = _.cloneDeep(this.msgList);
-        arr.push(msg);
-        runInAction(()=>{
-            this.msgList = arr;
-        })
+
+        if(msg){
+            let arr = _.cloneDeep(this.msgList);
+            arr.push(msg);
+            runInAction(()=>{
+                this.msgList = arr;
+            })
+        }
     }
 
 

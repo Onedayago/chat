@@ -10,16 +10,15 @@ const TalkPage = inject('stores')(observer((props) => {
     const {talkStore, userStore } = props.stores;
 
     useEffect(()=>{
-        console.log(talkStore.msgList)
-    },[talkStore.msgList])
-
-    useEffect(()=>{
         const userInfo = userStore.getUserInfo();
+        talkStore.initData({
+            friendInfo: state,
+            userInfo
+        });
         talkStore.getMsgList({
             userId: userInfo.id,
             friendId: state?.friendId
         });
-        talkStore.initData();
         return ()=>{
             talkStore.clearData();
         }

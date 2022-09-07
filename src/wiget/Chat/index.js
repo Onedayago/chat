@@ -55,7 +55,7 @@ const Chat = (props) => {
 
     const renderLeftMessage = (item, index) => {
         return(
-            <div className={styles.msgLeftBox} key={index}>
+            <div className={styles.msgLeftBox} key={item._id}>
                 {renderUser()}
                 {renderContent(item)}
             </div>
@@ -64,7 +64,7 @@ const Chat = (props) => {
 
     const renderRightMessage = (item, index) => {
         return(
-            <div className={styles.msgRightBox} key={index}>
+            <div className={styles.msgRightBox} key={item._id}>
                 {renderContent(item)}
                 {renderUser()}
             </div>

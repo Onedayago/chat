@@ -26,7 +26,7 @@ class SocketSource {
         })
 
         this.io.on('msg', (data)=>{
-            global.eventBus.emit('msg', data, this.userInfo);
+            global.eventBus.emit('msg', data);
         })
 
         this.io.on('disconnect', ()=>{
