@@ -1,7 +1,7 @@
 
-import React from "react";
+import React, {useEffect} from "react";
 import { Badge, TabBar } from 'antd-mobile';
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {
     AppOutline,
     MessageOutline,
@@ -10,12 +10,41 @@ import {
     UserOutline,
 } from 'antd-mobile-icons';
 import styles from "./home.module.css";
+import {inject} from "mobx-react";
 
-const Home = () => {
+
+const Home = inject('stores')((props) => {
+    const {userStore, socketStore, talkStore} = props.stores;
     const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(()=>{
+        const userInfo = userStore.getUserInfo();
+        socketStore.init({
+            userInfo,
+        })
+        return ()=>{
+            socketStore.clearData();
+        }
+    },[])
+
+    useEffect(()=>{
+        const userInfo = userStore.getUserInfo();
+        socketStore.init({
+            userInfo,
+        })
+    },[userStore.userInfo])
+
+    useEffect(()=>{
+        //如果不是去登录和注册则判断是否已登录
+        if(location.pathname !== '/login' && location.pathname !== '/register'){
+            if(!userStore.getUserInfo()){
+                navigate('/login');
+            }
+        }
+    },[location])
 
     const setRouteActive = (value) => {
-        console.log(value)
         navigate(value);
     }
 
@@ -53,6 +82,6 @@ const Home = () => {
             </TabBar>
         </div>
     )
-}
+})
 
 export default Home;

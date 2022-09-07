@@ -1,6 +1,7 @@
 
 import {makeObservable, runInAction, action, observable} from "mobx";
 import * as Api from "../service/api";
+import {storage} from "../util/index";
 
 class userSource {
 
@@ -16,16 +17,27 @@ class userSource {
         this.userInfo = null;
     }
 
-    @action
     doLogin = async (params) => {
         try {
             const res = await Api.login(params);
-            this.userInfo = res?.data
+            runInAction(()=>{
+                this.userInfo = res?.data;
+                storage.save(storage.USERINFO, JSON.stringify(res?.data));
+            })
+            return true;
         }catch (e){
-
+            return false;
         }
     }
 
+    //获取用户信息
+    getUserInfo = () => {
+        if(this.userInfo){
+            return this.userInfo;
+        }else{
+            return JSON.parse(storage.get(storage.USERINFO));
+        }
+    }
 
 }
 

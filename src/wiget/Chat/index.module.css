@@ -1,0 +1,55 @@
+
+
+.user{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.msgLeftBox{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+    justify-content: flex-start;
+}
+
+.msgRightBox{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+    justify-content: flex-end;
+}
+
+.txtBox{
+    background-color: darkgray;
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+.footBox{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px black solid;
+}
+
+.footTop{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: center;
+}
+
+.msgList{
+    overflow: scroll;
+    height: calc(100vh - 3rem);
+    position: fixed;
+    width: 100%;
+}
+
+.panel{
+    height: 5rem;
+    background-color: red;
+    width: 100%;
+}
+

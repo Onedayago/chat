@@ -5,6 +5,8 @@ import Home from "./home";
 import TalkList from "./talkList";
 import FriendList from "./friendList";
 import AddFriend from "./addFriend";
+import TalkPage from "./talkPage";
+import CallPage from "./callPage";
 
 const Index = () => {
     return(
@@ -15,6 +17,8 @@ const Index = () => {
                 <Route path={"/friendList"} element={<FriendList/>}/>
                 <Route path={"/addFriend"} element={<AddFriend/>}/>
             </Route>
+            <Route path="/talk" element={<TalkPage />} />
+            <Route path="/callPage" element={<CallPage />} />
         </Routes>
     )
 }
