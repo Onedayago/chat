@@ -1,5 +1,5 @@
 
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { Badge, TabBar } from 'antd-mobile';
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {
@@ -17,6 +17,7 @@ const Home = inject('stores')((props) => {
     const {userStore, socketStore, talkStore} = props.stores;
     const navigate = useNavigate();
     const location = useLocation();
+    const [activeKey, setActiveKey] = useState('/friendList');
 
     useEffect(()=>{
         const userInfo = userStore.getUserInfo();
@@ -27,6 +28,14 @@ const Home = inject('stores')((props) => {
             socketStore.clearData();
         }
     },[])
+
+    useEffect(()=>{
+        if(location.pathname === '/'){
+            navigate('/friendList');
+        }else{
+            setActiveKey(location.pathname);
+        }
+    },[location.pathname])
 
     useEffect(()=>{
         const userInfo = userStore.getUserInfo();
@@ -71,7 +80,7 @@ const Home = inject('stores')((props) => {
             <div className={styles.outlet}>
                 <Outlet/>
             </div>
-            <TabBar onChange={value => setRouteActive(value)}>
+            <TabBar onChange={value => setRouteActive(value)} activeKey={activeKey} defaultActiveKey={'/friendList'}>
                 {tabs.map(item => (
                     <TabBar.Item
                         key={item.key}

@@ -15,15 +15,27 @@ class TalkSource {
     @observable
     userInfo = null;
 
+    @observable
+    pageSize = 10;
+
+    @observable
+    disabled = false;
+
+    @observable
+    lastId = null;
+
+
     constructor() {
         makeObservable(this);
     }
 
     @action
-    initData(data){
+    async initData(data) {
         global.eventBus.addListener('msg', this.onMsg);
         this.friendInfo = data.friendInfo;
         this.userInfo = data.userInfo;
+        this.pageSize = 10;
+        await this.getMsgList( 10 , null);
     }
 
     @action
@@ -31,11 +43,19 @@ class TalkSource {
         this.msgList = [];
         this.friendInfo = null;
         this.userInfo = null;
+        this.lastId = null;
         global.eventBus.removeListener('msg', this.onMsg);
     }
 
-    getMsgList = async (params) => {
+    //获取聊天记录
+    getMsgList = async (pageSize, lastId) => {
         try {
+            let params = {
+                userId: this.userInfo.id,
+                friendId: this.friendInfo.friendId,
+                pageSize: pageSize,
+                lastId,
+            }
             const res = await Api.getMsgList(params);
             let data = [];
             res?.data.forEach((item, index)=>{
@@ -59,9 +79,13 @@ class TalkSource {
                     })
                 }
             })
-
             runInAction(()=>{
-                this.msgList = data;
+                this.lastId = data[0]._id;
+                if(!lastId){
+                    this.msgList = data;
+                }else{
+                    this.msgList = data.concat(this.msgList);
+                }
             })
         } catch (e) {
 
@@ -85,7 +109,7 @@ class TalkSource {
                 arr.push(msg);
                 this.msgList = arr;
             })
-
+            return true;
         } catch (e) {
             return false;
         }
