@@ -71,9 +71,9 @@
     "webpack": "^5.64.4",
     "webpack-dev-server": "^4.6.0",
     "webpack-manifest-plugin": "^4.0.2",
+    "webrtc-adapter": "^8.1.2",
     "workbox-webpack-plugin": "^6.4.1"
   },
-  "proxy": "http://192.168.31.5:8000",
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",

@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 
 const Chat = forwardRef((props, ref) => {
 
-    const {initMessage, onSend, onRefresh} = props;
+    const {initMessage, onSend, onRefresh, onVideo} = props;
 
     const [message, setMessage] = useState(initMessage);
     const [lastMsg, setLastMsg] = useState(initMessage[initMessage.length - 1]);
@@ -97,7 +97,7 @@ const Chat = forwardRef((props, ref) => {
     const renderPanel = () => {
         return(
             <div className={styles.panel}>
-                <Button color={"primary"}>开始视频</Button>
+                <Button color={"primary"} onClick={onVideo}>开始视频</Button>
             </div>
         )
     }
@@ -158,12 +158,14 @@ Chat.defaultProps = {
     initMessage: [],
     onSend: ()=>{},
     onRefresh: ()=>{},
+    onVideo: ()=>{},
 }
 
 Chat.propTypes = {
     initMessage: PropTypes.array,
     onSend: PropTypes.func,
     onRefresh: PropTypes.func,
+    onVideo: PropTypes.func
 }
 
 export default Chat;

@@ -2,6 +2,8 @@
 
 import {makeObservable, runInAction, action, observable} from "mobx";
 import {io} from "socket.io-client";
+import {Peer} from "peerjs";
+import {Dialog} from "antd-mobile";
 
 class SocketSource {
 
@@ -11,9 +13,12 @@ class SocketSource {
     @observable
     userInfo = null;
 
+    @observable
+    peerId = null;
+
     constructor() {
         makeObservable(this);
-        this.io = new io("http://192.168.31.5:3000");
+        this.io = new io("http://192.168.31.6:8000");
         this.io.on('connect', ()=>{
             console.log('connect')
             runInAction(()=>{
@@ -38,8 +43,7 @@ class SocketSource {
 
     @action
     clearData(){
-        this.storeName = new Set();
-        this.stores = [];
+        global.peer&&global.peer.disconnect();
     }
 
     @action
@@ -48,12 +52,41 @@ class SocketSource {
     }
 
     socketLogin = () => {
-        this.io.emit('login', this.userInfo);
+        global.peer = new Peer({
+            host: '192.168.31.6',
+            port: 8000,
+            path: '/peerjs/myapp',
+            debug: 3,
+            logFunction: console.log,
+            config: {
+                'iceServers': [
+                    {
+                        urls: "turn:openrelay.metered.ca:443?transport=tcp",
+                        username: "openrelayproject",
+                        credential: "openrelayproject",
+                    },
+                ]
+            }
+        });
+        global.peer.on('open', (id)=>{
+            this.userInfo['peerId'] = id;
+            console.log("peerId"+id);
+            runInAction(()=>{
+                this.peerId = id;
+            })
+            this.io.emit('login', this.userInfo);
+        })
+
+        global.peer.on('call', (call)=>{
+            global.eventBus.emit('onAnswer', {call});
+        })
     }
 
     socketLoginOut = () => {
         this.io.emit('loginOut', this.userInfo);
     }
+
+
 
 }
 

@@ -1,14 +1,17 @@
 
 import React, {useEffect, useRef} from "react";
-import {Chat} from "../../wiget/index";
-import {useLocation} from "react-router-dom";
-import {inject, observer} from "mobx-react";
+import {Chat, CallPage} from "../../wiget/index";
+import {useLocation, useNavigate} from "react-router-dom";
+import {inject, observer, Observer} from "mobx-react";
+import {Modal} from "antd-mobile";
+
 
 const TalkPage = inject('stores')(observer((props) => {
 
     const {state} = useLocation();
-    const {talkStore, userStore } = props.stores;
+    const {talkStore, userStore, callStore } = props.stores;
     const chatRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userInfo = userStore.getUserInfo();
@@ -36,6 +39,27 @@ const TalkPage = inject('stores')(observer((props) => {
         }
     }
 
+    const handleVideo = () => {
+        callStore.call(state?.peerId,(stream, remoteStream)=>{
+            Modal.alert({
+                content: (
+                    <Observer>
+                        {()=>(
+                            <CallPage
+                                remoteStream={remoteStream}
+                                stream={stream}
+                            />
+                        )}
+                    </Observer>
+
+                ),
+            })
+        }, ()=>{
+
+        });
+
+    }
+
     return(
         <Chat
             ref={chatRef}
@@ -45,6 +69,7 @@ const TalkPage = inject('stores')(observer((props) => {
                 await talkStore.getMsgList(talkStore.pageSize, talkStore.lastId);
             }}
             disabled={talkStore.disabled}
+            onVideo={handleVideo}
         />
     )
 }))

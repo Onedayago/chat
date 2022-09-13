@@ -1,6 +1,6 @@
 
 import React, {useEffect} from "react";
-import {Button, List} from "antd-mobile";
+import {Button, Dialog, List} from "antd-mobile";
 import {inject, Observer} from "mobx-react";
 import {useNavigate} from "react-router-dom";
 
@@ -53,7 +53,7 @@ const FriendList = inject('stores')((props) => {
     }
 
     const goTalk = (item, index) => {
-        navigate('/talk', {state: {friendId: item.userId, friendName: item.username}})
+        navigate('/talk', {state: {friendId: item.userId, friendName: item.username, peerId: item.peerId}})
     }
 
     const renderAddAction = (item, index) => {

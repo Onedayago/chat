@@ -14,20 +14,9 @@ import {inject} from "mobx-react";
 
 
 const Home = inject('stores')((props) => {
-    const {userStore, socketStore, talkStore} = props.stores;
     const navigate = useNavigate();
     const location = useLocation();
     const [activeKey, setActiveKey] = useState('/friendList');
-
-    useEffect(()=>{
-        const userInfo = userStore.getUserInfo();
-        socketStore.init({
-            userInfo,
-        })
-        return ()=>{
-            socketStore.clearData();
-        }
-    },[])
 
     useEffect(()=>{
         if(location.pathname === '/'){
@@ -36,22 +25,6 @@ const Home = inject('stores')((props) => {
             setActiveKey(location.pathname);
         }
     },[location.pathname])
-
-    useEffect(()=>{
-        const userInfo = userStore.getUserInfo();
-        socketStore.init({
-            userInfo,
-        })
-    },[userStore.userInfo])
-
-    useEffect(()=>{
-        //如果不是去登录和注册则判断是否已登录
-        if(location.pathname !== '/login' && location.pathname !== '/register'){
-            if(!userStore.getUserInfo()){
-                navigate('/login');
-            }
-        }
-    },[location])
 
     const setRouteActive = (value) => {
         navigate(value);

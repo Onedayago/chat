@@ -3,7 +3,7 @@ import axios from "axios";
 import * as Url from "./url";
 
 const instance = axios.create({
-    baseURL: 'http://192.168.31.5:3000/api/',
+    baseURL: 'http://192.168.31.6:8000/api/',
     timeout: 1000,
 });
 

@@ -1,7 +1,5 @@
 
 import {observable, makeObservable, runInAction, action} from "mobx";
-import {Peer} from "peerjs";
-
 
 class CallSource {
 
@@ -11,35 +9,55 @@ class CallSource {
     @observable
     remoteStream = null;
 
-    @observable
-    userInfo = null;
-
     constructor() {
         makeObservable(this);
     }
 
     @action
     initData(data){
-        this.userInfo = data?.userInfo;
-        this.peer = new Peer(this.userInfo.id);
+
     }
 
     @action
     clearData(){
         this.stream = null;
         this.remoteStream = null;
-        this.userInfo = null;
     }
 
-    call = () => {
+    call = (friendPeerId, success, error) => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: false })
             .then((stream)=>{
-                runInAction(()=>{
-                    this.stream = stream;
-                })
+                const call = global.peer.call(friendPeerId, stream);
+                call.on("stream", (remoteStream) => {
+                    runInAction(()=>{
+                        this.stream = stream;
+                        this.remoteStream = remoteStream;
+                        success?.(stream, remoteStream);
+                    })
+                });
             })
             .catch((err)=>{
+                alert(err.toString())
                 console.log(err.toString());
+                error?.();
+            })
+    }
+
+    answer = (call, success, error) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then((stream)=>{
+                call.answer(stream);
+                call.on("stream", (remoteStream) => {
+                    runInAction(()=>{
+                        this.stream = stream;
+                        this.remoteStream = remoteStream;
+                        success?.(stream, remoteStream);
+                    })
+                });
+            })
+            .catch((err)=>{
+                console.log(err)
+                error?.();
             })
     }
 
