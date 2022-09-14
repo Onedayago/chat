@@ -4,6 +4,7 @@ import {makeObservable, runInAction, action, observable} from "mobx";
 import {io} from "socket.io-client";
 import {Peer} from "peerjs";
 import {Dialog} from "antd-mobile";
+import {BASEIP, BASEPORT} from "../config";
 
 class SocketSource {
 
@@ -18,7 +19,7 @@ class SocketSource {
 
     constructor() {
         makeObservable(this);
-        this.io = new io("http://192.168.31.6:8000");
+        this.io = new io(`${BASEIP}:${BASEPORT}`);
         this.io.on('connect', ()=>{
             console.log('connect')
             runInAction(()=>{
@@ -53,8 +54,8 @@ class SocketSource {
 
     socketLogin = () => {
         global.peer = new Peer({
-            host: '192.168.31.6',
-            port: 8000,
+            host: BASEIP,
+            port: BASEPORT,
             path: '/peerjs/myapp',
             debug: 3,
             logFunction: console.log,

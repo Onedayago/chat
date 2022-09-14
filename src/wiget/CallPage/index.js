@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 
 const CallPage = (props) => {
-    const {stream, remoteStream, answer, hangUp} = props;
+    const {stream, remoteStream, hangUp} = props;
     const localVideo = useRef(null);
     const remoteVideo = useRef(null);
 
@@ -30,7 +30,6 @@ const CallPage = (props) => {
                 className={styles.video}
             />
             <Button color={"primary"} onClick={hangUp}>挂断</Button>
-            <Button color={"primary"} onClick={answer}>接听</Button>
         </div>
     )
 

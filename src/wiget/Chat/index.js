@@ -7,6 +7,7 @@ import styles from "./index.module.css";
 import { useSize, useToggle} from 'ahooks';
 import { AddCircleOutline } from 'antd-mobile-icons';
 import PropTypes from "prop-types";
+import moment from "moment";
 
 const Chat = forwardRef((props, ref) => {
 
@@ -97,11 +98,12 @@ const Chat = forwardRef((props, ref) => {
     const renderPanel = () => {
         return(
             <div className={styles.panel}>
-                <Button color={"primary"} onClick={onVideo}>开始视频</Button>
+                <Button color={"primary"} onClick={onVideo}>通话</Button>
             </div>
         )
     }
 
+    //渲染底部控制按钮
     const renderFooter = () => {
         return(
             <div className={styles.footBox} ref={footerRef}>
@@ -123,6 +125,23 @@ const Chat = forwardRef((props, ref) => {
         )
     }
 
+    //渲染聊天记录
+    const renderListItem = (item, index) => {
+        if(item?.position === "left"){
+            return renderLeftMessage(item, index);
+        }else{
+            return renderRightMessage(item, index);
+        }
+    }
+
+    //渲染时间显示
+    const renderTime = (item, index) => {
+        let time = moment(item.createdAt).format("YYYY-MM-DD hh:mm:ss");
+        return(
+            <div className={styles.time}>{time}</div>
+        )
+    }
+
     const renderMsgList = () => {
         let height = footerSize?.height??0;
         return(
@@ -133,11 +152,12 @@ const Chat = forwardRef((props, ref) => {
                     <div ref={listRef}>
                         {
                             message.map((item, index)=>{
-                                if(item?.position === "left"){
-                                    return renderLeftMessage(item, index);
-                                }else{
-                                    return renderRightMessage(item, index);
-                                }
+                                return (
+                                    <div key={index}>
+                                        {renderTime(item, index)}
+                                        {renderListItem(item,index)}
+                                    </div>
+                                )
                             })
                         }
                     </div>

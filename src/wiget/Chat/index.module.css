@@ -51,9 +51,16 @@
 .panel{
     height: 5rem;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     display: flex;
     flex: 1;
+}
+
+.time{
+    text-align: center;
+    width: 100vm;
+    height: 2rem;
+    line-height: 2rem;
 }
 

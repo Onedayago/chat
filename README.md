@@ -9,4 +9,5 @@ https://github.com/Onedayago/ChatServer
 5. 拒绝好友添加
 6. 删除好友
 7. 1 对 1 文字聊天
-8. 
+
+
