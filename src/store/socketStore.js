@@ -86,9 +86,6 @@ class SocketSource {
     socketLoginOut = () => {
         this.io.emit('loginOut', this.userInfo);
     }
-
-
-
 }
 
 const SocketStore = new SocketSource();

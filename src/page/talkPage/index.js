@@ -3,7 +3,6 @@ import React, {useEffect, useRef} from "react";
 import {Chat, CallPage} from "../../wiget/index";
 import {useLocation, useNavigate} from "react-router-dom";
 import {inject, observer, Observer} from "mobx-react";
-import {Modal} from "antd-mobile";
 
 
 const TalkPage = inject('stores')(observer((props) => {
@@ -40,24 +39,7 @@ const TalkPage = inject('stores')(observer((props) => {
     }
 
     const handleVideo = () => {
-        callStore.call(state?.peerId,(stream, remoteStream)=>{
-            Modal.alert({
-                content: (
-                    <Observer>
-                        {()=>(
-                            <CallPage
-                                remoteStream={remoteStream}
-                                stream={stream}
-                            />
-                        )}
-                    </Observer>
-
-                ),
-            })
-        }, ()=>{
-
-        });
-
+        callStore.call(state?.friendId);
     }
 
     return(

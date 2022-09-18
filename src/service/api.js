@@ -67,3 +67,6 @@ export function getMsgList (params) {
     return sendPost(Url.getMsgList, params);
 }
 
+export function getUserStatus (params) {
+    return sendPost(Url.getUserStatus, params);
+}

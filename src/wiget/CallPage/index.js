@@ -5,38 +5,45 @@ import PropTypes from "prop-types";
 
 
 const CallPage = (props) => {
-    const {stream, remoteStream, hangUp} = props;
+    const {stream, remoteStream, hangUp, visible} = props;
     const localVideo = useRef(null);
     const remoteVideo = useRef(null);
 
-    useEffect(()=>{
-        localVideo.current.srcObject= stream;
-        localVideo.current.play();
-    },[stream])
 
     useEffect(()=>{
-        remoteVideo.current.srcObject= remoteStream;
-        remoteVideo.current.play();
-    },[remoteStream])
+        if(visible && stream){
+            localVideo.current.srcObject= stream;
+            localVideo.current.play();
+        }
+    },[stream, visible])
 
-    return(
-        <div>
-            <video
-                ref={localVideo}
-                className={styles.video}
-            />
-            <video
-                ref={remoteVideo}
-                className={styles.video}
-            />
-            <Button color={"primary"} onClick={hangUp}>挂断</Button>
-        </div>
-    )
+    useEffect(()=>{
+        if(visible && remoteStream){
+            remoteVideo.current.srcObject= remoteStream;
+            remoteVideo.current.play();
+        }
+    },[remoteStream, visible])
 
+    if(visible){
+        return(
+            <div className={styles.container}>
+                <video
+                    ref={localVideo}
+                    className={styles.video}
+                />
+                <video
+                    ref={remoteVideo}
+                    className={styles.video}
+                />
+                <Button color={"primary"} onClick={hangUp}>挂断</Button>
+            </div>
+        )
+    }
+    return null;
 }
 
 CallPage.defaultProps = {
-
+    visible: false,
 }
 
 CallPage.propTypes = {
@@ -44,6 +51,7 @@ CallPage.propTypes = {
     remoteStream: PropTypes.any,
     answer: PropTypes.func,
     hangUp: PropTypes.func,
+    visible: PropTypes.bool
 }
 
 export default CallPage;

@@ -7,12 +7,13 @@ import FriendList from "./friendList";
 import AddFriend from "./addFriend";
 import TalkPage from "./talkPage";
 import React, {useEffect} from "react";
-import {inject} from "mobx-react";
+import {inject, Observe, observer} from "mobx-react";
 import {CallPage} from "../wiget/index";
 import {Modal} from "antd-mobile";
+import styles from "./index.module.css";
 
 
-const Index = inject('stores')((props) => {
+const Index = inject('stores')(observer((props) => {
     const {userStore, socketStore, callStore} = props.stores;
     const location = useLocation();
     const navigate = useNavigate();
@@ -25,18 +26,18 @@ const Index = inject('stores')((props) => {
     },[])
 
     const goCallPage = (data) => {
-        callStore.answer(data.call,(stream, remoteStream)=>{
-            Modal.alert({
-                content: (
-                    <CallPage
-                        remoteStream={remoteStream}
-                        stream={stream}
-                    />
-                ),
-            })
-        }, ()=>{
+        Modal.confirm({
+            closeOnMaskClick: true,
+            closeOnAction: true,
+            content: '有人呼叫你是否接听',
+            onCancel: ()=>{
 
-        });
+            },
+            onConfirm: () => {
+                callStore.answer(data.call);
+            }
+        })
+
     }
 
     useEffect(()=>{
@@ -66,17 +67,25 @@ const Index = inject('stores')((props) => {
     },[userStore.userInfo])
 
     return(
-        <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Home />} >
-                <Route path={"/talkList"} element={<TalkList/>}/>
-                <Route path={"/friendList"} element={<FriendList/>}/>
-                <Route path={"/addFriend"} element={<AddFriend/>}/>
-            </Route>
-            <Route path="/talk" element={<TalkPage />} />
-        </Routes>
+        <div className={styles.container}>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Home />} >
+                    <Route path={"/talkList"} element={<TalkList/>}/>
+                    <Route path={"/friendList"} element={<FriendList/>}/>
+                    <Route path={"/addFriend"} element={<AddFriend/>}/>
+                </Route>
+                <Route path="/talk" element={<TalkPage />} />
+            </Routes>
+            <CallPage
+                visible={callStore.visible}
+                stream={callStore.stream}
+                remoteStream={callStore.remoteStream}
+                hangUp={callStore.close}
+            />
+        </div>
     )
-})
+}))
 
 export default Index;
 

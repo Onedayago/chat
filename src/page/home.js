@@ -10,10 +10,11 @@ import {
     UserOutline,
 } from 'antd-mobile-icons';
 import styles from "./home.module.css";
-import {inject} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 
-const Home = inject('stores')((props) => {
+const Home = inject('stores')(observer((props) => {
+    const {callStore} = props.stores;
     const navigate = useNavigate();
     const location = useLocation();
     const [activeKey, setActiveKey] = useState('/friendList');
@@ -64,6 +65,6 @@ const Home = inject('stores')((props) => {
             </TabBar>
         </div>
     )
-})
+}))
 
 export default Home;

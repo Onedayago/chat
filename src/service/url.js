@@ -20,3 +20,5 @@ export const getMsgList = '/msg/getMsgList';
 
 export const sendMsg = '/msg/sendMsg';
 
+export const getUserStatus = '/user/getUserStatus'
+

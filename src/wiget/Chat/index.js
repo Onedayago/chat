@@ -2,16 +2,21 @@
 
 
 import React, {useState, useRef, useEffect, useImperativeHandle, forwardRef} from "react";
-import {Avatar, Card, Input, Button, Toast, PullToRefresh} from "antd-mobile";
+import {Avatar, Card, Input, Button, Toast, PullToRefresh, ActionSheet} from "antd-mobile";
 import styles from "./index.module.css";
 import { useSize, useToggle} from 'ahooks';
 import { AddCircleOutline } from 'antd-mobile-icons';
 import PropTypes from "prop-types";
 import moment from "moment";
 
+const ACTIONS = [
+    { text: '视频', key: 'video' },
+    { text: '取消', key: 'cancel' },
+]
+
 const Chat = forwardRef((props, ref) => {
 
-    const {initMessage, onSend, onRefresh, onVideo} = props;
+    const {initMessage, onSend, onRefresh, onVideo, onVoice} = props;
 
     const [message, setMessage] = useState(initMessage);
     const [lastMsg, setLastMsg] = useState(initMessage[initMessage.length - 1]);
@@ -24,6 +29,7 @@ const Chat = forwardRef((props, ref) => {
     const scrollRef = useRef(null);
     const listRef = useRef(null);
     const listSize = useSize(listRef);
+    const [visible, setVisible] = useState(false)
 
     useImperativeHandle(ref,()=>({
         clear(){
@@ -98,7 +104,7 @@ const Chat = forwardRef((props, ref) => {
     const renderPanel = () => {
         return(
             <div className={styles.panel}>
-                <Button color={"primary"} onClick={onVideo}>通话</Button>
+                <Button color={"primary"} onClick={()=>setVisible(true)}>通话</Button>
             </div>
         )
     }
@@ -166,10 +172,33 @@ const Chat = forwardRef((props, ref) => {
         )
     }
 
+    const renderAction = () => {
+        return(
+            <ActionSheet
+                closeOnMaskClick={true}
+                visible={visible}
+                actions={ACTIONS}
+                onClose={() => setVisible(false)}
+                onAction={action => {
+                    if (action.key === 'video') {
+                        onVideo?.();
+                        setVisible(false);
+                    }else if(action.key === 'voice'){
+                        onVoice?.();
+                        setVisible(false);
+                    }else if(action.key === 'cancel'){
+                        setVisible(false);
+                    }
+                }}
+            />
+        )
+    }
+
     return(
         <div>
             {renderMsgList()}
             {renderFooter()}
+            {renderAction()}
         </div>
     )
 })
@@ -179,13 +208,15 @@ Chat.defaultProps = {
     onSend: ()=>{},
     onRefresh: ()=>{},
     onVideo: ()=>{},
+    onVoice: ()=>{},
 }
 
 Chat.propTypes = {
     initMessage: PropTypes.array,
     onSend: PropTypes.func,
     onRefresh: PropTypes.func,
-    onVideo: PropTypes.func
+    onVideo: PropTypes.func,
+    onVoice: PropTypes.func,
 }
 
 export default Chat;
