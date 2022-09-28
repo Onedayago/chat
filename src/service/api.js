@@ -2,10 +2,20 @@
 import axios from "axios";
 import * as Url from "./url";
 import {BASEAPI} from "../config/index";
+import {storage} from "../util";
 
 const instance = axios.create({
     baseURL: BASEAPI,
     timeout: 1000,
+});
+
+instance.interceptors.request.use(function (config) {
+    config.headers.Authorization = storage.get(storage.TOKEN)
+    // Do something before request is sent
+    return config;
+}, function (error) {
+    // Do something with request error
+    return Promise.reject(error);
 });
 
 

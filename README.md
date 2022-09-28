@@ -1,5 +1,11 @@
-# 服务端地址
-https://github.com/Onedayago/ChatServer
+
+# 客户端技术
+1. react
+2. antdesign 组件库
+3. socket.io
+4. peer.js webrtc 库
+
+
 # 完成功能
 
 1. 登录
@@ -14,6 +20,11 @@ https://github.com/Onedayago/ChatServer
 ![输入图片说明](1663493717725.gif)
 
 ![输入图片说明](1663493735580.gif)
+
+# 客户端代码地址
+https://github.com/Onedayago/chat
+# 服务端代码地址
+https://github.com/Onedayago/ChatServer
 
 
 

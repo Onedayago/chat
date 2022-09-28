@@ -23,6 +23,7 @@ class userSource {
             runInAction(()=>{
                 this.userInfo = res?.data;
                 storage.save(storage.USERINFO, JSON.stringify(res?.data));
+                storage.save(storage.TOKEN, res?.data?.token);
             })
             return true;
         }catch (e){

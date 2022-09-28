@@ -1,6 +1,7 @@
 
 
 export const USERINFO = "USERINFO";
+export const TOKEN = "TOKEN";
 
 export function save(key, value){
     window.localStorage.setItem(key, value);
